@@ -1,0 +1,220 @@
+Rem * Title  : 12-08-2000:dd-mm-yyyy
+`            + Ex-D sound.
+
+exdLogoPlay()
+
+end
+
+
+function exdLogoPlay()
+   `Dimentions
+   dim sx#(7)
+   dim sy#(6)
+   dim sz#(6)
+   dim oldsx#(7)
+   dim oldsy#(6)
+   dim oldsz#(6)
+
+   dim rx#(6)
+   dim ry#(6)
+   dim rz#(6)
+   dim newrx#(6)
+   dim newry#(6)
+   dim newrz#(6)
+
+
+   exdLogoInit()
+
+
+   `Starting Varables
+   per=1
+   timee = 0
+
+   oldsx#(1) = -400
+   oldsy#(1) = 0
+   oldsz#(1) = -200
+
+   oldsx#(2) = 0
+   oldsy#(2) = 0
+   oldsz#(2) = 150
+
+   oldsx#(3) = 400
+   oldsy#(3) = 0
+   oldsz#(3) = -125
+
+   oldsx#(4) = 0
+   oldsy#(4) = 0
+   oldsz#(4) = 400
+
+   oldsx#(5) = 0
+   oldsy#(5) = 0
+   oldsz#(5) = 400
+
+   oldsx#(6) = 0
+   oldsy#(6) = -400
+   oldsz#(6) = 500
+
+
+   `Main Loop..
+   do
+
+      `Time Period/Key frame
+      if per = 1
+
+         sx#(1) = -65
+         sy#(1) = 0
+         sz#(1) = -125
+
+         sx#(2) = 0
+         sy#(2) = 0
+         sz#(2) = -125
+
+         sx#(3) = 65
+         sy#(3) = 0
+         sz#(3) = -125
+
+         sx#(6) = 0
+         sy#(6) = -400
+         sz#(6) = 1000
+
+         if oldsz#(2) < -124
+
+            oldsx#(4) = 30
+            oldsy#(4) = 70
+            oldsz#(4) = -127
+
+            oldsx#(5) = -30
+            oldsy#(5) = -70
+            oldsz#(5) = -127
+
+            sx#(6) = 0
+            sy#(6) = -125
+            sz#(6) = -127
+
+            fspeed# = 2.4
+            fcurve# = 2
+            fa# = 90
+
+            ffspeed# = 2.4
+            ffcurve# = 2
+            ffa# = 270
+
+            timee = 0
+
+            fsize# = 100
+
+            per = 2
+         endif
+      endif
+
+      if per = 2
+
+         fa# = wrapvalue(fa# + fcurve#)
+         oldsx#(4) = newxvalue(oldsx#(4),fa#,fspeed# * 1.25)
+         oldsy#(4) = newzvalue(oldsy#(4),fa#,fspeed#)
+
+         ffa# = wrapvalue(ffa# + ffcurve#)
+         oldsx#(5) = newxvalue(oldsx#(5),ffa#,ffspeed# * 1.25)
+         oldsy#(5) = newzvalue(oldsy#(5),ffa#,ffspeed#)
+
+         if fsize# > 1.143 then fsize# = fsize# - 1.142
+
+         scale object 4,fsize#,fsize#,fsize#
+         scale object 5,fsize#,fsize#,fsize#
+
+         if timee > 175
+            per = 3
+         endif
+      endif
+
+      if per = 3 and timee > 250
+         sx#(1) = -400
+         sy#(1) = 0
+         sz#(1) = -125
+
+         sx#(2) = 0
+         sy#(2) = 0
+         sz#(2) = -399
+
+         sx#(3) = 400
+         sy#(3) = 0
+         sz#(3) = -125
+
+         sx#(6) = 0
+         sy#(6) = -150
+         sz#(6) = 0
+
+         if sz#(2) < -398 then per = 4
+      endif
+
+      timee = timee + 1
+
+      `Position Control
+      for n = 1 to 6
+         if n = 1 or n = 2 or n = 3 or n > 5
+            oldsx#(n) = curvevalue(sx#(n),oldsx#(n),25)
+            oldsy#(n) = curvevalue(sy#(n),oldsy#(n),25)
+            oldsz#(n) = curvevalue(sz#(n),oldsz#(n),25)
+         endif
+      next n
+
+      `Update objects
+      for n = 1 to 6
+         position object n,oldsx#(n),oldsy#(n),oldsz#(n)
+         rotate object n,wrapvalue(rx#(n)),wrapvalue(ry#(n)),wrapvalue(rz#(n))
+      next n
+
+
+      sync
+   loop
+
+endfunction
+
+
+function exdLogoInit()
+   `System setup
+   sync on
+   hide mouse
+   autocam off
+   backdrop on
+   fog on
+   fog color rgb(0,0,0)
+   fog distance 550
+   set ambient light 100
+   color backdrop rgb(0,0,0)
+   position camera 0,0,-400
+
+   `Load and play Ex-D sound
+   load sound "ex-d mono.wav",1
+   play sound 1
+
+   `Load images
+   load image "E - ex-d.bmp",1
+   load image "x - ex-d.bmp",2
+   load image "-D - ex-d.bmp",3
+   load image "flare.bmp",4
+   load image "soft.bmp",6
+
+   `Make objects
+   make object plain 1,100,140
+   make object plain 2,90,75
+   make object plain 3,100,140
+   make object plain 4,30,30
+   make object plain 5,30,30
+   make object plain 6,175,15
+
+   ghost object on 4
+   ghost object on 5
+
+   for n = 1 to 4
+      texture object n,n
+   next n
+   texture object 5,4
+   texture object 6,6
+
+   for n = 1 to 3
+      set object n,1,0,0
+   next n
+   set object 4,1,0,1
+   set object 5,1,0,1
+endfunction
