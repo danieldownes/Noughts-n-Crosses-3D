@@ -1,0 +1,26 @@
+------------------------------------------------------------------------------
+
+Noughts 'n' Crosses - 3D v1.00.00 (c)2000-2001 : Ex-D Software Development(TM)
+
+------------------------------------------------------------------------------
+
+14-09-2001:
+	    * Continued work on breaking down BETA code into functions
+	    + This file
+
+24-06-2001:
+	    * Starting to build full version (converting code so that it uses functions more)
+
+28-06-2000:
+    to      + Start of all BETA files and first relese
+08-07-2000
+
+---------------------------------------------------------------------------
+             |                            |          |
+             |format:                     |          | Key:
+             |----------------------------|          |  + = added
+             |dd-mm-yyyy:                 |          |  - = removed
+             |            + 3rd Task done |          |  * = changed/updated
+             |            * 2ed Task done |          \ __ __ __ __ __ __ __
+	     |            - 1st Task done |
+	     \ __ __ __ __ __ __ __ __ __ 
