@@ -1,0 +1,1140 @@
+Rem * Title  : Norts 'n' Crosses - 3D
+Rem * Author : Extravaganza DAN
+rem System setup
+hide mouse
+autocam off
+sync on
+disable escapekey
+
+rem Extravaza DAN logo
+
+goto misslogo
+
+rem Start of Ex-D logo
+load sound "gas.wav",1
+load sound "explo.wav",2
+set text size 32 : set text font "Arial"
+
+load object "DAN.x",1:position object 1,0,0,-250
+load object "EXTRAVAGANZA.x",4:hide object 4
+make object cylinder 2,3: hide object 2:position object 2,300,0,-150
+make object sphere 3,1:hide object 3
+
+position camera 0,0,-150 :color backdrop rgb(0,0,0):set ambient light 40
+
+COLOR OBJECT 1,rgb(0,0,255)
+z#=-200
+
+do
+z# = z# + 1
+
+if z# = -165 then play sound 1
+
+if z# >= -75 then goto ex
+position object 1,0,0,z#
+sync
+loop
+
+ex:
+play sound 2
+position object 3,-45,0,-75
+color object 3,rgb(255,255,0)
+show object 3
+do
+sca#=sca#+100
+if sca# =>1600 then goto exx
+scale object 3,sca#,sca#,sca#
+sync
+loop
+
+exx:
+zrotate object 2,90
+scale object 2,60,3000,60
+x#=200
+show object 2
+color object 2,rgb(255,0,0)
+
+do
+x#=x#-10
+if x# =< -10 then goto exxx:
+position object 2,x#,0,-75
+sync
+loop
+
+exxx:
+position object 4,0,20,-75
+color object 4,rgb(0,0,0)
+show object 4
+
+do
+red#=red#+5
+if red#>255 then goto exxxx
+color object 4,rgb(red#,0,0)
+sync
+loop
+
+exxxx:
+al#= 40
+do
+CENTER TEXT 320, 375, "Presents..."
+al#=al#-1
+if al#<0 then goto exend
+set ambient light al#
+sync
+loop
+
+exend:
+
+for nn = 1 to 4
+delete object nn
+next nn
+delete sound 1
+delete sound 2
+color backdrop rgb(0,0,200)
+set ambient light 40
+
+rem End of Ex-D logo
+
+misslogo:
+
+
+
+rem Load Sounds
+load sound "pl1.wav",1
+`load sound "pl2.wav",2
+`load sound "pl3.wav",3
+`load sound "pl4.wav",4
+`load sound "pl5.wav",5
+`load sound "pl6.wav",6
+`load sound "pl7.wav",7
+`load sound "pl8.wav",8
+`load sound "pl9.wav",9
+
+
+rem Load Music
+load music "music\music1.mid",1
+load music "music\music2.mid",2
+load music "music\music3.mid",3
+load music "music\music4.mid",4
+load music "music\music5.mid",5
+load music "music\music6.mid",6
+
+rem Load textures
+load image "cross.bmp",2
+
+load image "player1.bmp",3
+load image "player2.bmp",4
+
+load image "main.bmp",1
+load image "file pop-out.bmp",5
+load image "random pop-out.bmp",6
+load image "opts pop-out.bmp",7
+load image "ani pop-out.bmp",8
+load image "sound pop-out.bmp",9
+load image "game pop-out.bmp",10
+load image "play pop-out.bmp",11
+load image "help pop-out.bmp",12
+
+load image "ani cam1.bmp",20
+load image "ani cam0.bmp",21
+load image "ani pop1.bmp",22
+load image "ani pop0.bmp",23
+load image "ani spin1.bmp",24
+load image "ani spin0.bmp",25
+
+load image "so effects1.bmp",26
+load image "so effects0.bmp",27
+load image "so music1.bmp",28
+load image "so music0.bmp",29
+
+load image "game sen0.bmp",30
+load image "game sen1.bmp",31
+load image "game sen2.bmp",32
+
+
+
+rem 3D Board layout...
+for n = 3 to 14
+make object cylinder n,3
+color object n,rgb(255,255,0)
+next n
+rem Position/Rotate/Scale these objects
+position object 3,15,0,15: scale object 3,60,3000,60
+position object 4,-15,0,15: scale object 4,60,3000,60
+position object 5,15,0,-15: scale object 5,60,3000,60
+position object 6,-15,0,-15: scale object 6,60,3000,60
+zrotate object 7,90:position object 7,0,15,15: scale object 7,60,3000,60
+zrotate object 8,90:position object 8,0,-15,15: scale object 8,60,3000,60
+zrotate object 9,90:position object 9,0,15,-15: scale object 9,60,3000,60
+zrotate object 10,90:position object 10,0,-15,-15: scale object 10,60,3000,60
+xrotate object 11,90:yrotate object 11,90:position object 11,15,15,0: scale object 11,60,3000,60
+xrotate object 12,90:yrotate object 12,90:position object 12,15,-15,0: scale object 12,60,3000,60
+xrotate object 13,90:yrotate object 13,90:position object 13,-15,15,0: scale object 13,60,3000,60
+xrotate object 14,90:yrotate object 14,90:position object 14,-15,-15,0: scale object 14,60,3000,60
+
+
+randomize 100
+
+rem Setup varables
+rem Sprite control
+mbx = 640
+fbx = 640
+ranx = 640
+optxx = 640
+helpxx = 640
+
+anixx = 640
+soundxx = 640
+gamexx = 640
+
+
+mt = 0
+
+startgame:
+
+
+`Read saved settings for game.
+open to read 1,"mydata.dat"
+   read file 1,anicam
+   read file 1,anispr
+   read file 1,aniobs
+
+   read file 1,soeff
+   read file 1,somusic
+
+   read file 1,sgame
+
+close file 1
+
+
+randomon = 1
+
+
+rem Set camera starting position
+cx# = 0:cy# = 0:cz# = -1500
+ncx = 0:ncy = 0:ncz = -140
+
+
+no = 14
+
+vp = 1
+
+
+rem 3D world varables
+p131=0:p231=0:p331=0
+p121=0:p221=0:p321=0
+p111=0:p211=0:p311=0
+
+p132=0:p232=0:p332=0
+p122=0:p222=0:p322=0
+p112=0:p212=0:p312=0
+
+p133=0:p233=0:p333=0
+p123=0:p223=0:p323=0
+p113=0:p213=0:p313=0
+
+
+`Scenerio of game
+
+
+if sgame = 1 then p222 = player: np = 222:INP = 1
+
+if sgame = 2
+make object box 1,16,16,16: position object 1,0,0,0:color object 1,rgb(255,0,0):texture object 1,2:ghost object on 1
+load object "Torus.x",2: position object 2,0,0,0:scale object 2,500,500,500:color object 2,rgb(0,255,0):ghost object on 2
+endif
+
+
+rem Main Game...
+do
+
+rem Music Control
+if somusic = 1
+
+if mt = 0
+  play music 1
+  mt = 2
+endif
+
+if mt = 1 and music playing(6) = 0
+  play music 1
+  mt = 2
+endif
+
+if mt = 2 and music playing(1) = 0
+  play music 2
+  mt = 3
+endif
+
+if mt = 3 and music playing(2) = 0
+  play music 3
+  mt = 4
+endif
+
+if mt = 4 and music playing(3) = 0
+  play music 4
+  mt = 5
+endif
+
+if mt = 5 and music playing(4) = 0
+  play music 5
+  mt = 6
+endif
+
+if mt = 6 and music playing(5) = 0
+  play music 6
+  mt = 1
+endif
+
+else
+if music playing(1) = 1 then stop music 1
+if music playing(2) = 1 then stop music 2
+if music playing(3) = 1 then stop music 3
+if music playing(4) = 1 then stop music 4
+if music playing(5) = 1 then stop music 5
+if music playing(6) = 1 then stop music 6
+
+endif
+
+
+rem Keys...
+rem Placement keys     (vp = View Point) (p123 = Position 123)
+rem                    (Player = Whos turn) (np = New Position)
+
+if randomon = 1 then goto getout
+
+if inkey$() = "1"
+   if vp = 1 and p111 = 0 then p111 = player: np = 111:INP = 1
+   if vp = 2 and p131 = 0 then p131 = player: np = 131:INP = 1
+   if vp = 3 and p133 = 0 then p133 = player: np = 133:INP = 1
+   if vp = 4 and p113 = 0 then p113 = player: np = 113:INP = 1
+   if vp = 5 and p113 = 0 then p113 = player: np = 113:INP = 1
+   if vp = 6 and p311 = 0 then p311 = player: np = 311:INP = 1
+   goto getout
+ endif
+if inkey$() = "2"
+   if vp = 1 and p211 = 0 then p211 = player: np = 211:INP = 1
+   if vp = 2 and p231 = 0 then p231 = player: np = 231:INP = 1
+   if vp = 3 and p233 = 0 then p233 = player: np = 233:INP = 1
+   if vp = 4 and p213 = 0 then p213 = player: np = 213:INP = 1
+   if vp = 5 and p112 = 0 then p112 = player: np = 112:INP = 1
+   if vp = 6 and p312 = 0 then p312 = player: np = 312:INP = 1
+   goto getout
+ endif
+if inkey$() = "3"
+   if vp = 1 and p311 = 0 then p311 = player: np = 311:INP = 1
+   if vp = 2 and p331 = 0 then p331 = player: np = 331:INP = 1
+   if vp = 3 and p333 = 0 then p333 = player: np = 333:INP = 1
+   if vp = 4 and p313 = 0 then p313 = player: np = 313:INP = 1
+   if vp = 5 and p111 = 0 then p111 = player: np = 111:INP = 1
+   if vp = 6 and p313 = 0 then p313 = player: np = 313:INP = 1
+   goto getout
+ endif
+if inkey$() = "4"
+   if vp = 1 and p121 = 0 then p121 = player: np = 121:INP = 1
+   if vp = 2 and p132 = 0 then p132 = player: np = 132:INP = 1
+   if vp = 3 and p123 = 0 then p123 = player: np = 123:INP = 1
+   if vp = 4 and p112 = 0 then p112 = player: np = 112:INP = 1
+   if vp = 5 and p123 = 0 then p123 = player: np = 123:INP = 1
+   if vp = 6 and p321 = 0 then p321 = player: np = 321:INP = 1
+   goto getout
+ endif
+if inkey$() = "5"
+   if vp = 1 and p221 = 0 then p221 = player: np = 221:INP = 1
+   if vp = 2 and p232 = 0 then p232 = player: np = 232:INP = 1
+   if vp = 3 and p223 = 0 then p223 = player: np = 223:INP = 1
+   if vp = 4 and p212 = 0 then p212 = player: np = 212:INP = 1
+   if vp = 5 and p122 = 0 then p122 = player: np = 122:INP = 1
+   if vp = 6 and p322 = 0 then p322 = player: np = 322:INP = 1
+   goto getout
+ endif
+if inkey$() = "6"
+   if vp = 1 and p321 = 0 then p321 = player: np = 321:INP = 1
+   if vp = 2 and p332 = 0 then p332 = player: np = 332:INP = 1
+   if vp = 3 and p323 = 0 then p323 = player: np = 323:INP = 1
+   if vp = 4 and p312 = 0 then p312 = player: np = 312:INP = 1
+   if vp = 5 and p121 = 0 then p121 = player: np = 121:INP = 1
+   if vp = 6 and p323 = 0 then p323 = player: np = 323:INP = 1
+   goto getout
+ endif
+if inkey$() = "7"
+   if vp = 1 and p131 = 0 then p131 = player: np = 131:INP = 1
+   if vp = 2 and p133 = 0 then p133 = player: np = 133:INP = 1
+   if vp = 3 and p113 = 0 then p113 = player: np = 113:INP = 1
+   if vp = 4 and p111 = 0 then p111 = player: np = 111:INP = 1
+   if vp = 5 and p133 = 0 then p133 = player: np = 133:INP = 1
+   if vp = 6 and p331 = 0 then p331 = player: np = 331:INP = 1
+   goto getout
+ endif
+if inkey$() = "8"
+   if vp = 1 and p231 = 0 then p231 = player: np = 231:INP = 1
+   if vp = 2 and p233 = 0 then p233 = player: np = 233:INP = 1
+   if vp = 3 and p213 = 0 then p213 = player: np = 213:INP = 1
+   if vp = 4 and p211 = 0 then p211 = player: np = 211:INP = 1
+   if vp = 5 and p132 = 0 then p132 = player: np = 132:INP = 1
+   if vp = 6 and p332 = 0 then p332 = player: np = 332:INP = 1
+   goto getout
+ endif
+if inkey$() = "9"
+   if vp = 1 and p331 = 0 then p331 = player: np = 331:INP = 1
+   if vp = 2 and p333 = 0 then p333 = player: np = 333:INP = 1
+   if vp = 3 and p313 = 0 then p313 = player: np = 313:INP = 1
+   if vp = 4 and p311 = 0 then p311 = player: np = 311:INP = 1
+   if vp = 5 and p131 = 0 then p131 = player: np = 131:INP = 1
+   if vp = 6 and p333 = 0 then p333 = player: np = 333:INP = 1
+   goto getout
+ endif
+
+getout:
+
+rem Menu keys
+if inkey$() = "f" or inkey$() = "F" then goto gamefile
+if inkey$() = "o" or inkey$() = "O"
+  do
+  if inkey$() = "" then goto gp
+  loop
+endif
+if inkey$() = "h" or inkey$() = "H" then goto gamehelp
+
+
+rem Veiw/controls keys
+rem vp1
+if vp = 1
+if upkey() = 1 and olduk = 0 then vp = 2:goto back2loop
+if downkey() = 1 and olddk = 0 then vp = 4:goto back2loop
+if leftkey() = 1 and oldlk = 0 then vp = 5:goto back2loop
+if rightkey() = 1 and oldrk = 0 then vp = 6:goto back2loop
+endif
+
+if vp = 2
+if upkey() = 1 and olduk = 0 then vp = 3:goto back2loop
+if downkey() = 1 and olddk = 0 then vp = 1:goto back2loop
+if leftkey() = 1 and oldlk = 0 then vp = 5:goto back2loop
+if rightkey() = 1 and oldrk = 0 then vp = 6:goto back2loop
+endif
+
+if vp = 3
+if upkey() = 1 and olduk = 0 then vp = 4:goto back2loop
+if downkey() = 1 and olddk = 0 then vp = 2:goto back2loop
+if leftkey() = 1 and oldlk = 0 then vp = 5:goto back2loop
+if rightkey() = 1 and oldrk = 0 then vp = 6:goto back2loop
+endif
+
+if vp = 4
+if upkey() = 1 and olduk = 0 then vp = 1:goto back2loop
+if downkey() = 1 and olddk = 0 then vp = 3:goto back2loop
+if leftkey() = 1 and oldlk = 0 then vp = 5:goto back2loop
+if rightkey() = 1 and oldrk = 0 then vp = 6:goto back2loop
+endif
+
+if vp = 5
+if upkey() = 1 and olduk = 0 then vp = 2:goto back2loop
+if downkey() = 1 and olddk = 0 then vp = 4:goto back2loop
+if leftkey() = 1 and oldlk = 0 then vp = 3:goto back2loop
+if rightkey() = 1 and oldrk = 0 then vp = 1:goto back2loop
+endif
+
+if vp = 6
+if upkey() = 1 and olduk = 0 then vp = 2:goto back2loop
+if downkey() = 1 and olddk = 0 then vp = 4:goto back2loop
+if leftkey() = 1 and oldlk = 0 then vp = 1:goto back2loop
+if rightkey() = 1 and oldrk = 0 then vp = 3:goto back2loop
+endif
+
+back2loop:
+
+olduk = upkey()
+olddk = downkey()
+oldrk = rightkey()
+oldlk = leftkey()
+
+
+rem Placement control   (INP = New Placement) (no = New Object)
+if INP = 1
+ INP = 0
+ no = no + 1
+
+
+rem Play a sound
+   if soeff = 1
+   sno = rnd(9)
+   if sno = 1 or sno = 2 or sno = 3 or sno = 4 or sno = 5 or sno = 6 or sno = 7 or sno = 8 or sno = 9 then play sound sno
+   endif
+
+
+  if np = 111 and p111 = 1 then make object box no,16,16,16: position object no,-30,-30,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 111 and p111 = 2 then load object "Torus.x",no: position object no,-30,-30,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 211 and p211 = 1 then make object box no,16,16,16: position object no,0,-30,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 211 and p211 = 2 then load object "Torus.x",no: position object no,0,-30,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 311 and p311 = 1 then make object box no,16,16,16: position object no,30,-30,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 311 and p311 = 2 then load object "Torus.x",no: position object no,30,-30,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 121 and p121 = 1 then make object box no,16,16,16: position object no,-30,0,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 121 and p121 = 2 then load object "Torus.x",no: position object no,-30,0,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 221 and p221 = 1 then make object box no,16,16,16: position object no,0,0,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 221 and p221 = 2 then load object "Torus.x",no: position object no,0,0,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 321 and p321 = 1 then make object box no,16,16,16: position object no,30,0,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 321 and p321 = 2 then load object "Torus.x",no: position object no,30,0,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 131 and p131 = 1 then make object box no,16,16,16: position object no,-30,30,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 131 and p131 = 2 then load object "Torus.x",no: position object no,-30,30,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 231 and p231 = 1 then make object box no,16,16,16: position object no,0,30,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 231 and p231 = 2 then load object "Torus.x",no: position object no,0,30,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 331 and p331 = 1 then make object box no,16,16,16: position object no,30,30,-30:color object no,rgb(255,0,0):texture object no,2
+  if np = 331 and p331 = 2 then load object "Torus.x",no: position object no,30,30,-30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 112 and p112 = 1 then make object box no,16,16,16: position object no,-30,-30,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 112 and p112 = 2 then load object "Torus.x",no: position object no,-30,-30,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 212 and p212 = 1 then make object box no,16,16,16: position object no,0,-30,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 212 and p212 = 2 then load object "Torus.x",no: position object no,0,-30,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 312 and p312 = 1 then make object box no,16,16,16: position object no,30,-30,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 312 and p312 = 2 then load object "Torus.x",no: position object no,30,-30,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 122 and p122 = 1 then make object box no,16,16,16: position object no,-30,0,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 122 and p122 = 2 then load object "Torus.x",no: position object no,-30,0,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 222 and p222 = 1 then make object box no,16,16,16: position object no,0,0,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 222 and p222 = 2 then load object "Torus.x",no: position object no,0,0,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 322 and p322 = 1 then make object box no,16,16,16: position object no,30,0,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 322 and p322 = 2 then load object "Torus.x",no: position object no,30,0,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 132 and p132 = 1 then make object box no,16,16,16: position object no,-30,30,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 132 and p132 = 2 then load object "Torus.x",no: position object no,-30,30,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 232 and p232 = 1 then make object box no,16,16,16: position object no,0,30,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 232 and p232 = 2 then load object "Torus.x",no: position object no,0,30,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 332 and p332 = 1 then make object box no,16,16,16: position object no,30,30,0:color object no,rgb(255,0,0):texture object no,2
+  if np = 332 and p332 = 2 then load object "Torus.x",no: position object no,30,30,0:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 113 and p113 = 1 then make object box no,16,16,16: position object no,-30,-30,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 113 and p113 = 2 then load object "Torus.x",no: position object no,-30,-30,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 213 and p213 = 1 then make object box no,16,16,16: position object no,0,-30,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 213 and p213 = 2 then load object "Torus.x",no: position object no,0,-30,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 313 and p313 = 1 then make object box no,16,16,16: position object no,30,-30,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 313 and p313 = 2 then load object "Torus.x",no: position object no,30,-30,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 123 and p123 = 1 then make object box no,16,16,16: position object no,-30,0,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 123 and p123 = 2 then load object "Torus.x",no: position object no,-30,0,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 223 and p223 = 1 then make object box no,16,16,16: position object no,0,0,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 223 and p223 = 2 then load object "Torus.x",no: position object no,0,0,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 323 and p323 = 1 then make object box no,16,16,16: position object no,30,0,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 323 and p323 = 2 then load object "Torus.x",no: position object no,30,0,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 133 and p133 = 1 then make object box no,16,16,16: position object no,-30,30,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 133 and p133 = 2 then load object "Torus.x",no: position object no,-30,30,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 233 and p233 = 1 then make object box no,16,16,16: position object no,0,30,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 233 and p233 = 2 then load object "Torus.x",no: position object no,0,30,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+  if np = 333 and p333 = 1 then make object box no,16,16,16: position object no,30,30,30:color object no,rgb(255,0,0):texture object no,2
+  if np = 333 and p333 = 2 then load object "Torus.x",no: position object no,30,30,30:scale object no,500,500,500:color object no,rgb(0,255,0)
+
+rem Check for win
+
+`Sceneiro of game
+if sgame = 2 then p222 = player
+
+rem From front
+
+rem 1st layer
+rem hoizontal
+if p111 = player and p211 = player and p311 = player then goto win
+if p121 = player and p221 = player and p321 = player then goto win
+if p131 = player and p231 = player and p331 = player then goto win
+rem vertical
+if p111 = player and p121 = player and p131 = player then goto win
+if p211 = player and p221 = player and p231 = player then goto win
+if p311 = player and p321 = player and p331 = player then goto win
+rem diaganal
+if p111 = player and p221 = player and p331 = player then goto win
+if p131 = player and p221 = player and p311 = player then goto win
+rem 2ed layer
+rem horizontal
+if p112 = player and p212 = player and p312 = player then goto win
+if p122 = player and p222 = player and p322 = player then goto win
+if p132 = player and p232 = player and p332 = player then goto win
+rem vertical
+if p112 = player and p122 = player and p132 = player then goto win
+if p212 = player and p222 = player and p232 = player then goto win
+if p312 = player and p322 = player and p332 = player then goto win
+rem diaganal
+if p112 = player and p222 = player and p332 = player then goto win
+if p132 = player and p222 = player and p312 = player then goto win
+rem 3ed layer
+rem horizontal
+if p113 = player and p213 = player and p313 = player then goto win
+if p123 = player and p223 = player and p323 = player then goto win
+if p133 = player and p233 = player and p333 = player then goto win
+rem vertical
+if p113 = player and p123 = player and p133 = player then goto win
+if p213 = player and p223 = player and p233 = player then goto win
+if p313 = player and p323 = player and p333 = player then goto win
+rem diaganal
+if p113 = player and p223 = player and p333 = player then goto win
+if p133 = player and p223 = player and p313 = player then goto win
+
+rem From top
+
+rem 1st layer
+rem horizontal
+rem This line is already in 'From front' - if p131 = player and p231 = player and p331 = player then goto win
+if p132 = player and p232 = player and p332 = player then goto win
+if p133 = player and p233 = player and p333 = player then goto win
+rem vertical
+if p131 = player and p132 = player and p133 = player then goto win
+if p231 = player and p232 = player and p233 = player then goto win
+if p331 = player and p332 = player and p333 = player then goto win
+rem diaganal
+if p131 = player and p232 = player and p333 = player then goto win
+if p133 = player and p232 = player and p331 = player then goto win
+
+rem 2ed layer
+rem horizontal
+rem This line is already in 'From front' - if p121 = player and p221 = player and p321 = player then goto win
+if p122 = player and p222 = player and p322 = player then goto win
+if p123 = player and p223 = player and p323 = player then goto win
+rem vertical
+if p121 = player and p122 = player and p123 = player then goto win
+if p221 = player and p222 = player and p223 = player then goto win
+if p321 = player and p322 = player and p323 = player then goto win
+rem diaganal
+if p121 = player and p222 = player and p323 = player then goto win
+if p123 = player and p222 = player and p321 = player then goto win
+
+rem 3ed layer
+rem horizontal
+rem This line is already in 'From front' - if p111 = player and p211 = player and p311 = player then goto win
+if p112 = player and p212 = player and p312 = player then goto win
+if p113 = player and p213 = player and p313 = player then goto win
+rem vertical
+if p111 = player and p112 = player and p113 = player then goto win
+if p211 = player and p212 = player and p213 = player then goto win
+if p311 = player and p312 = player and p313 = player then goto win
+rem diaganal
+if p111 = player and p212 = player and p313 = player then goto win
+if p113 = player and p212 = player and p311 = player then goto win
+
+
+rem From side (left) - diaganals
+rem 1st layer
+if p133 = player and p122 = player and p111 = player then goto win
+if p131 = player and p122 = player and p113 = player then goto win
+rem 2ed layer
+if p233 = player and p222 = player and p211 = player then goto win
+if p231 = player and p222 = player and p213 = player then goto win
+rem 3ed layer
+if p333 = player and p322 = player and p311 = player then goto win
+if p331 = player and p322 = player and p313 = player then goto win
+
+
+rem 3D diaganal
+if p111 = player and p222 = player and p333 = player then goto win
+if p133 = player and p222 = player and p311 = player then goto win
+if p131 = player and p222 = player and p313 = player then goto win
+if p113 = player and p222 = player and p331 = player then goto win
+
+
+if player = 1 then player = 2 else player = 1
+if player = 1 then sprite 3,540,330,3 else sprite 3,540,330,4
+
+endif
+
+
+rem View Point(VP) control
+if vp = 1
+   ncx = 0
+   ncy = 0
+   ncz = -140
+
+   ncxr = 0
+   ncyr = 0
+   nczr = 0
+endif
+if vp = 2
+   ncx = 0
+   ncy = 140
+   ncz = 0
+
+   ncxr = 90
+   ncyr = 0
+   nczr = 0
+endif
+if vp = 3
+   ncx = 0
+   ncy = 0
+   ncz = 140
+
+   ncxr = 180
+   ncyr = 0
+   nczr = 0
+endif
+if vp = 4
+   ncx = 0
+   ncy = -140
+   ncz = 0
+
+   ncxr = 270
+   ncyr = 0
+   nczr = 0
+endif
+if vp = 5
+   ncx = -140
+   ncy = 0
+   ncz = 0
+
+   ncxr = 0
+   ncyr = 90
+   nczr = 0
+endif
+if vp = 6
+   ncx = 140
+   ncy = 0
+   ncz = 0
+
+   ncxr = 0
+   ncyr = 270
+   nczr = 0
+endif
+
+cx# = curvevalue(ncx, cx#, 20)
+cy# = curvevalue(ncy, cy#, 20)
+cz# = curvevalue(ncz, cz#, 20)
+
+cxr# = curveangle(ncxr, cxr#, 20)
+cyr# = curveangle(ncyr, cyr#, 20)
+czr# = curveangle(nczr, czr#, 20)
+
+if anicam = 1
+position camera cx#,cy#,cz#
+rotate camera cxr#,cyr#,czr#
+else
+position camera ncx,ncy,ncz
+rotate camera ncxr,ncyr,nczr
+endif
+
+rem Control boraders
+
+rem Main
+rem Intro
+if mbx > 300
+ mbx = mbx - 2
+ sprite 1,mbx,1,1
+endif
+
+rem File Menu
+if fms = 0 and fbx < 640
+ fbx = fbx + 40
+ sprite 5,fbx,75,5
+endif
+
+rem Option Menu
+if opss = 0 and optxx < 640
+ optxx = optxx + 40
+ sprite 7,optxx,25,7
+endif
+
+rem Animation/option menu
+if anixx < 640
+ anixx = anixx + 40
+ sprite 8,anixx,25,8
+endif
+
+rem Sound/option menu
+if soundxx < 640
+ soundxx = soundxx + 40
+ sprite 9,soundxx,25,9
+endif
+
+rem Game/option menu
+if gamexx < 640
+ gamexx = gamexx + 40
+ sprite 10,gamexx,25,10
+endif
+
+
+rem Help
+if helpxx < 640
+ helpxx = helpxx + 40
+ sprite 12,helpxx,150,12
+endif
+
+
+rem Quit menu???
+
+rem Randomize sprite
+if ranms = 1 and ranx > 25
+ ranx = ranx - 40
+ sprite 6,ranx,300,6
+endif
+
+if ranms = 0 and ranx < 640
+ ranx = ranx + 40
+ sprite 6,ranx,300,6
+endif
+
+if randomon = 1
+ ranms = 1
+ if player = 1 then player = 2 else player = 1
+ if player = 1 then sprite 3,mbx + 250,330,3 else sprite 3,mbx + 250,330,4
+ if inkey$() = "s" or inkey$() = "S"
+   randomon = 0
+   ranms = 0
+
+
+ endif
+endif
+
+if aniobs = 1
+rem Spin the pieces (objects)
+for nn = 15 to no
+nox# = nox# + 0.4
+noy# = noy# + 0.2
+noz# = noz# + 0.6
+nnox# = wrapvalue(nox#)
+nnoy# = wrapvalue(noy#)
+nnoz# = wrapvalue(noz#)
+rotate object nn,nnox#,nnoy#,nnoz#
+next nn
+ if sgame = 2
+   rotate object 1,nnox#,nnoy#,nnoz#
+   rotate object 2,nnox#,nnoy#,nnoz#
+ endif
+endif
+
+sync
+
+resumegame:
+
+loop
+`End of main loop
+
+
+
+`Subs...
+
+rem Win
+win:
+goto newgame
+
+
+
+rem Filemenu
+rem Animate file menu
+gamefile:
+fms = 1
+do
+
+if fms = 1 and fbx > 5
+fbx = fbx - 40
+sprite 5,fbx,75,5
+endif
+
+if inkey$() = "n" or inkey$() = "N" then fms = 0:goto newgame
+if inkey$() = "q" or inkey$() = "Q" then fms = 0:goto quitgame
+if inkey$() = "c" or inkey$() = "C" then fms = 0:goto resumegame
+
+sync
+loop
+
+rem New Game
+newgame:
+if object exist(1) then delete object 1
+if object exist(2) then delete object 2
+for nn = 15 to no
+delete object nn
+next nn
+fms = 0
+goto startgame
+
+
+rem Quit Game
+
+rem Show 'Snoopy Tennis 3-D' advert
+quitgame:
+
+  for nn = 1 to 50
+    if sprite exist(nn) then delete sprite nn
+  next nn
+
+load image "ad/back.bmp",50
+sprite 50,1,1,50
+load animation "ad/SnoopyTennis3d.avi",1
+
+place animation 1,470,160,585,350
+play animation 1
+sync
+suspend for key
+
+end
+
+
+rem Options... (osx = Option-Sprite X)
+gp:
+oldanicam = anicam
+oldanispr = oldanispr
+oldaniobs = aniobs
+oldsoeff = soeff
+oldsomusic = somusic
+oldsgame = sgame
+
+regp:
+
+do
+if optxx > 25
+ optxx = optxx - 40
+ sprite 7,optxx,25,7
+endif
+
+if inkey$() = "g" or inkey$() = "G" then goto gamepop
+
+if inkey$() = "a" or inkey$() = "A" then goto anipop
+
+if inkey$() = "s" or inkey$() = "S" then goto soundpop
+
+
+`Okay
+if inkey$() = "o" or inkey$() = "O"
+`Save settings
+   rem Delete file
+   if file exist("mydata.dat") then delete file "mydata.dat"
+
+   rem Open file for writing
+   open to write 1,"mydata.dat"
+
+   rem Write data
+   write file 1,anicam
+   write file 1,anispr
+   write file 1,aniobs
+
+   write file 1,soeff
+   write file 1,somusic
+
+   write file 1,sgame
+   close file 1
+
+  do
+  if inkey$() = ""
+      if sgame = oldsgame then goto resumegame else goto newgame
+  endif
+  loop
+endif
+
+if inkey$() = "c" or inkey$() = "C"
+anicam = oldanicam
+anispr = oldanispr
+aniobs = oldaniobs
+soeff = oldsoeff
+somusic = oldsomusic
+sgame = oldsgame
+
+opss = 0
+
+goto resumegame
+endif
+
+
+
+
+if anixx < 640
+ anixx = anixx + 40
+ sprite 8,anixx,25,8
+endif
+
+if soundxx < 640
+ soundxx = soundxx + 40
+ sprite 9,soundxx,25,9
+endif
+
+if gamexx < 640
+ gamexx = gamexx + 40
+ sprite 10,gamexx,25,10
+endif
+
+sync
+
+loop
+
+`Game
+gamepop:
+
+do
+if gamexx > 125
+ gamexx = gamexx - 40
+ sprite 10,gamexx,25,10
+endif
+
+`Theme
+if inkey$() = "t" or inkey$() = "T"
+
+  do
+  if inkey$() = "" then goto gamepop
+  loop
+endif
+
+`Scenerio
+if inkey$() = "s" or inkey$() = "S"
+sgame = sgame + 1:if sgame > 2 then sgame = 0
+  do
+  if inkey$() = "" then goto gamepop
+  loop
+endif
+
+`Okay
+if inkey$() = "o" or inkey$() = "O"
+`  sprite 33,640,145,21
+  sprite 30,640,145,21
+
+  do
+  if inkey$() = "" then goto regp
+  loop
+endif
+
+`Show settings
+if gamexx <= 125
+
+  if sgame = 0 then sprite 30,205,205,30
+  if sgame = 1 then sprite 30,205,205,31
+  if sgame = 2 then sprite 30,205,205,32
+endif
+
+sync
+loop
+
+
+
+
+`Animation
+anipop:
+
+do
+if anixx > 125
+ anixx = anixx - 40
+ sprite 8,anixx,25,8
+endif
+
+`Animate camera
+if inkey$() = "c" or inkey$() = "C"
+   if anicam = 1 then anicam = 0 else anicam = 1
+  do
+  if inkey$() = "" then goto anipop
+  loop
+endif
+
+`Animate pop-outs
+if inkey$() = "p" or inkey$() = "P"
+   if anispr = 1 then anispr = 0 else anispr = 1
+  do
+  if inkey$() = "" then goto anipop
+  loop
+endif
+
+`Spin/Aniemate pieces
+if inkey$() = "s" or inkey$() = "S"
+   if aniobs = 1 then aniobs = 0 else aniobs = 1
+  do
+  if inkey$() = "" then goto anipop
+  loop
+endif
+
+`Okay
+if inkey$() = "o" or inkey$() = "O"
+  sprite 20,640,145,21
+  sprite 22,640,145,21
+  sprite 24,640,145,21
+
+  do
+  if inkey$() = "" then goto regp
+  loop
+endif
+
+`Show settings
+if anixx <= 125
+if anicam = 1 then sprite 20,205,120,20 else sprite 20,205,120,21
+if anispr = 1 then sprite 22,205,180,22 else sprite 22,205,180,23
+if aniobs = 1 then sprite 24,205,230,24 else sprite 24,205,230,25
+endif
+
+sync
+loop
+
+
+`Sound
+soundpop:
+
+do
+if soundxx > 125
+ soundxx = soundxx - 40
+ sprite 9,soundxx,25,9
+endif
+
+`Toggle sound effects
+if inkey$() = "e" or inkey$() = "E"
+   if soeff = 1 then soeff = 0 else soeff = 1
+  do
+  if inkey$() = "" then goto soundpop
+  loop
+endif
+
+`Toggle music
+if inkey$() = "m" or inkey$() = "M"
+   if somusic = 1 then somusic = 0 else somusic = 1
+  do
+  if inkey$() = "" then goto soundpop
+  loop
+endif
+
+`Okay
+if inkey$() = "o" or inkey$() = "O"
+   sprite 26,640,145,21
+   sprite 28,640,145,21
+  do
+  if inkey$() = "" then goto regp
+  loop
+endif
+
+`Show settings
+if soundxx <= 125
+if soeff = 1 then sprite 26,210,130,26 else sprite 26,210,130,27
+if somusic = 1 then sprite 28,210,210,28 else sprite 28,210,210,29
+endif
+
+sync
+loop
+
+
+rem Help
+gamehelp:
+do
+
+if helpxx > 25
+ helpxx = helpxx - 40
+ sprite 12,helpxx,150,12
+endif
+
+`Okay
+if inkey$() = "o" or inkey$() = "O"
+  do
+  if inkey$() = "" then goto resumegame
+  loop
+endif
+
+sync
+loop
+
+rem DEVELOPMENTS...
+rem Save game
+rem Load game
