@@ -1,0 +1,17 @@
+----------------------------
+Noughts 'n' Crosses 3D - v1b
+---------- Ex-D ------------
+
+So you've mastered the traditional, pencil and paper game of 'noughts and crosses', sometimes called 'Tig Tag Toe'. Now try your hand at the bind-boggling 3D version...
+
+-----First!-----
+Make shore you have the newest version of Direct X installed. A Direct X 3D enabled graphics card is recommended.
+
+-----Secenond!------
+
+<HTML>
+<a href="http://www.fortunecity.com/littleitaly/buonarotti/370/download/games/ns-and-os-3D.exe">Download the game here (1.86Mb)</a>
+
+<a href="http://www.Ex-D.net/">Also visit THE Ex-D Site</a>
+</HTML>
+ for more games and programs from Ex-D.
